@@ -26,7 +26,7 @@ rest_grads = [
 
 
 def validatex0(x0):
-    eta = max([r(x0) for r in rest])
+    eta = max(r(x0) for r in rest)
     if eta < 0:
         return x0
 
@@ -34,28 +34,28 @@ def validatex0(x0):
     while not valid:
         delta = -eta
         res = simplex(x0, delta)
-        s, eta = res.x[0:2], res.fun
-        
+        s, eta = res.x[:2], res.fun
+
         valid = False
         alpha = 1
-    
+
         while not valid:
             valid = func(x0 + alpha * s) <= func(x0) + 0.5 * eta * alpha
-            
+
             for r in rest:
                 valid = valid and r(x0 + alpha * s) <= 0
                 if not valid:
                     break
-            
+
             if not valid:
                 alpha *= 0.5
                 if alpha < pow(2, -10):
                     alpha = 0.5
                     break
-        
+
         x0 += alpha * s
         print(f"x0: {x0}")
-    
+
     return x0
 
 
@@ -81,11 +81,7 @@ def slater_slay():
 
 
 def get_bounds(x, delta):
-    res = []
-    for idx in range(len(rest)):
-        if -delta <= rest[idx](x) <= 0.0:
-            res.append(idx)
-    return res
+    return [idx for idx in range(len(rest)) if -delta <= rest[idx](x) <= 0.0]
 
 
 def get_step(x, eta, s):
@@ -109,11 +105,8 @@ def simplex(x_k, d_k):
     A_ub[:, 2] = -1
     A_ub[0, 0:2] = func_grad(x_k)
 
-    j = 1
-    for i in bounds_idxs:
+    for j, i in enumerate(bounds_idxs, start=1):
         A_ub[j, 0:2] = rest_grads[i](x_k)
-        j += 1
-
     c = np.zeros(3)
     c[2] = 1
 
@@ -148,7 +141,7 @@ def zoytendeyk(x0: List[float], eta: int) -> List[float]:
 
         print(f"iter: {iter} - x: {x}")  # - delta: {delta} - eta: {eta} - f(x): {func(x)}")
 
-        if delta < -max([r(x) for r in rest]) and abs(eta) < 1e-5:
+        if delta < -max(r(x) for r in rest) and abs(eta) < 1e-5:
             break
 
     return x

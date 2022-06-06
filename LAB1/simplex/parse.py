@@ -5,19 +5,17 @@ def parse(filename: Path):
     signs = [">=", "=", "<="]
     variables = ["x1", "x2", "x3", "x4", "x5"]
 
-    matrix = list()
-    line_signs = list()
-    free_vec = list()
+    matrix = []
+    line_signs = []
+    free_vec = []
 
-    var_signs = list()
-    for var in variables:
-        var_signs.append("")
-    target = list()
-    
+    var_signs = ["" for _ in variables]
+    target = []
+
     with filename.open("r") as file:
         for lidx, line in enumerate(file):
             line = line.split()
-            matrix_line = list()
+            matrix_line = []
 
             # Parse line with null inequalities
             if lidx == 5:
@@ -25,7 +23,7 @@ def parse(filename: Path):
                     if token in signs:
                         var_signs[int(line[tidx - 1][1]) - 1] = token
                 continue
-            
+
             # Parse any other line
             for tidx, token in enumerate(line):
                 if token.isdigit():
@@ -39,7 +37,7 @@ def parse(filename: Path):
                     if lidx == 6:
                         target += matrix_line
                         target.append(line[tidx + 1])
-                        
+
                     else:
                         line_signs.append(token)
                         free_vec.append(float(line[tidx + 1]))

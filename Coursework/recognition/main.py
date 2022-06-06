@@ -13,26 +13,19 @@ def main():
     plot_rows = 3
     plot_cols = 4
 
-    scores_table = dict()
+    scores_table = {'SMO': {}}
 
-    scores_table['SMO'] = dict()
-    scores_table['SMO']['10cl'] = list()
-    scores_table['SMO']['2cl'] = list()
-    
-    scores_table['IP'] = dict()
-    scores_table['IP']['10cl'] = list()
-    scores_table['IP']['2cl'] = list()
+    scores_table['SMO']['10cl'] = []
+    scores_table['SMO']['2cl'] = []
 
-    scores_table['SLSQP'] = dict()
-    scores_table['SLSQP']['10cl'] = list()
-    scores_table['SLSQP']['2cl'] = list()
-
+    scores_table['IP'] = {'10cl': [], '2cl': []}
+    scores_table['SLSQP'] = {'10cl': [], '2cl': []}
     for method in ('SMO', 'IP', 'SLSQP'):
         for convert_classes in (False, True):
-            for exp in range(exp_count):
+            for _ in range(exp_count):
                 score = launch(method, convert_classes, verbose, graphical, plot_rows, plot_cols)
                 scores_table[method]['2cl' if convert_classes else '10cl'].append(score)
-    
+
     headers = ['', '10 classes', '2 classes']
     tables = {'SMO': list(), 'IP': list(), 'SLSQP': list()}
 
@@ -41,7 +34,7 @@ def main():
         [['Mean', np.mean(scores_table[method]['10cl']), np.mean(scores_table[method]['2cl'])]] + \
         [['Median', np.median(scores_table[method]['10cl']), np.median(scores_table[method]['2cl'])]] + \
         [['Max', max(scores_table[method]['10cl']), max(scores_table[method]['2cl'])]]
-    
+
     print("Accuracy score tables:\n")
     for method in ('SMO', 'IP', 'SLSQP'):
         print(f"Method: {method}")

@@ -8,20 +8,20 @@ from onedim.dichotomy_method import theoretical_assessment
 def main():
     eps_list = [0.1, 0.01, 0.001]
     my_fun = Function()
-    print("Function: " + my_fun.func_str + '\n')
+    print(f"Function: {my_fun.func_str}" + '\n')
     for eps in eps_list:
         print("eps = ", eps)
-        
+
         print("Dichotomy method results:")
         x_d, f_d, iterations = dichotomy_method(my_fun, eps)
         print("x = ", x_d)
         print("f(x) = ", f_d)
-        
+
         print("Number of function call:")
         print("\t theoretical  = " + str(theoretical_assessment(my_fun, eps)))
         print("\t practical = " + str(my_fun.count - 1))
         my_fun.count = 0
-        
+
         print("\nParabolic method results:")
         x_p, f_p = parabolic(my_fun, eps)
         print("x = ", x_p)

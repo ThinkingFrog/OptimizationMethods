@@ -27,7 +27,7 @@ def plot_gallery(images, titles, h, w, rows = 3, cols = 4):
 
 
 def convert_target(target):
-    new_target = list()
+    new_target = []
 
     for mark in target:
         if mark < 5:

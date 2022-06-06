@@ -5,7 +5,7 @@ class Fibonacci:
     def seq(self, n: int) -> int:
         if n == 0: 
             return 0
-        if n in (1, 2):
+        if n in {1, 2}:
             return 1
         return self.seq(n - 1) + self.seq(n - 2)
 
@@ -26,11 +26,11 @@ class Fibonacci:
         n = 1
         while self.seq(n) <= (b_k - a_k) / eps:
             n += 1
-        
+
         # k = 1
         lambda_k = a_k + self.seq(n - 2) / self.seq(n) * (b_k - a_k)
         mu_k = a_k + self.seq(n - 1) / self.seq(n) * (b_k - a_k)
-        
+
         # k <= n - 2
         for k in range(1, n - 1):
             if func.eval(lambda_k) > func.eval(mu_k):
@@ -39,7 +39,7 @@ class Fibonacci:
             else:
                 a_k, b_k, mu_k = a_k, mu_k, lambda_k
                 lambda_k = a_k + self.seq(n - k - 2) / self.seq(n - k) * (b_k  - a_k)
-        
+
         # k = n - 1
         lambda_n = lambda_k
         mu_n = lambda_n + alpha

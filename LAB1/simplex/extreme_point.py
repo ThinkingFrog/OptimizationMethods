@@ -5,7 +5,7 @@ import numpy as np
 def get_bases_matrix(matrix: np.ndarray):
     all_bases_matrix = []
     combination = []
-    indexes = [i for i in range(matrix.shape[1])]
+    indexes = list(range(matrix.shape[1]))
 
     for i in combinations(indexes, matrix.shape[0]):
         bases_matrix = matrix[:, i]
@@ -29,9 +29,7 @@ def get_bases(matrix: list, free_members: list):
         if len(result[result > 1e+16]) != 0:
             continue
 
-        base = []
-        for j in range(len(matrix[0])):
-            base.append(0)
+        base = [0 for _ in range(len(matrix[0]))]
         for j in range(len(indexes[i])):
             base[indexes[i][j]] = result[j]
         bases.append(base)
@@ -39,7 +37,7 @@ def get_bases(matrix: list, free_members: list):
 
 
 def brute_force(matrix: list, free_members: list, target: list):
-    if target[len(target) - 1] == "max":
+    if target[-1] == "max":
         for i in range(len(target) - 1):
             target[i] = -target[i]
     target.pop()

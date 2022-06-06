@@ -27,7 +27,7 @@ class Function:
         pylab.clabel(cs, colors="black")
         pylab.xlabel("x1")
         pylab.ylabel("x2")
-        pylab.title("Линии уровня функции" + self.func_str)
+        pylab.title(f"Линии уровня функции{self.func_str}")
         pylab.show()
 
     def set_points(self, res):
@@ -85,12 +85,10 @@ class Function:
         return F11 * F22 - F21 * F12
 
     def _F1(self, x1: float, x2: float) -> float:
-        num = 12 * (x1 / np.sqrt(1 + 3 * x1 ** 2 + x2 ** 2)) + 4
-        return num
+        return 12 * (x1 / np.sqrt(1 + 3 * x1 ** 2 + x2 ** 2)) + 4
 
     def _F2(self, x1: float, x2: float) -> float:
-        num = 4 * (x2 / np.sqrt(1 + 3 * x1 ** 2 + x2 ** 2)) + 1
-        return num
+        return 4 * (x2 / np.sqrt(1 + 3 * x1 ** 2 + x2 ** 2)) + 1
 
 
 class OneVarFunction:

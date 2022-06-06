@@ -7,10 +7,10 @@ from typing import List
 
 class TransportProblem:
     def __init__(self, filename):
-        self._demand = list()
-        self._supply = list()
-        self._costs = list()
-        self._matrix = list()
+        self._demand = []
+        self._supply = []
+        self._costs = []
+        self._matrix = []
         self._penalties = False
 
         with open(filename, 'r') as f:
@@ -26,20 +26,24 @@ class TransportProblem:
             costs = problem.pop(0).split(' ')
             if costs[0] == "penalty":
                 self._penalties = True
-                penalties = list()
+                penalties = []
                 while len(problem) > 0:
                     costs = problem.pop(0).split(' ')
                     penalties.append([int(item) for item in costs])
                 break
             else:
                 self._costs.append([int(item) for item in costs])
-        self._matrix = [[self.Shipment(0, 0, 0, 0) for j in range(len(self._demand))] for i in range(len(self._demand))]
+        self._matrix = [
+            [self.Shipment(0, 0, 0, 0) for _ in range(len(self._demand))]
+            for _ in range(len(self._demand))
+        ]
+
         print("Проверим задачу на замкнутость:")
 
         sum_sup = sum(self._supply)
         sum_dem = sum(self._demand)
-        print("Сумма запасов:" + str(sum_sup))
-        print("Сумма спросов:" + str(sum_dem))
+        print(f"Сумма запасов:{str(sum_sup)}")
+        print(f"Сумма спросов:{str(sum_dem)}")
 
         if self._penalties:
             for i in range(len(penalties[0])):
@@ -81,22 +85,27 @@ class TransportProblem:
             self.c = c
 
     def print_table(self):
-        rows = list()
+        rows = []
         headers = [""]
-        for col, item in enumerate(self._demand):
-            headers.append(f"consumer {col + 1} needs {item}")
+        headers.extend(
+            f"consumer {col + 1} needs {item}"
+            for col, item in enumerate(self._demand)
+        )
+
         for row_num, item in enumerate(self._supply):
-            cur_row = list()
-            cur_row.append(f"supplier {row_num + 1} supplies {item}")
-            for col_num in range(len(self._demand)):
-                cur_row.append(self._costs[row_num][col_num])
+            cur_row = [f"supplier {row_num + 1} supplies {item}"]
+            cur_row.extend(
+                self._costs[row_num][col_num]
+                for col_num in range(len(self._demand))
+            )
+
             rows.append(cur_row)
         # tablefmt="latex"
         print(tabulate.tabulate(rows, headers))
 
     def northWestCornerRule(self):
         northwest = 0
-        for r in range(0, len(self._supply)):
+        for r in range(len(self._supply)):
             for c in range(northwest, len(self._demand)):
                 quantity = min(self._supply[r], self._demand[c])
                 if quantity > 0:
@@ -109,15 +118,12 @@ class TransportProblem:
 
     def steppingStone(self):
         maxReduction = 0
-        move = list()
-        leaving = list()
+        move = []
+        leaving = []
 
         self.fixDegenerateCase()
-        for r in range(0, len(self._supply)):
-            for c in range(0, len(self._demand)):
-                if self._matrix[r][c] != None:
-                    pass
-
+        for r in range(len(self._supply)):
+            for c in range(len(self._demand)):
                 trail = self.Shipment(0, self._costs[r][c], r, c)
                 path = self.getClosedPath(trail)
 
@@ -150,11 +156,9 @@ class TransportProblem:
             self.steppingStone()
 
     def matrixToList(self):
-        result = list()
+        result = []
         for row in self._matrix:
-            for shipment in row:
-                if shipment is not None:
-                    result.append(shipment)
+            result.extend(shipment for shipment in row if shipment is not None)
         return result
 
     def getNeighbors(self, s: Shipment, s_list):
@@ -162,10 +166,11 @@ class TransportProblem:
         nbrs = {'0': None, '1': None}
         for el in s_list:
             if el != s:
-                if el.r == s.r and nbrs['0'] is None:
-                    nbrs['0'] = el
-                elif el.r == s.r and nbrs['1'] is None:
-                    nbrs['1'] = el
+                if el.r == s.r:
+                    if nbrs['0'] is None:
+                        nbrs['0'] = el
+                    elif nbrs['1'] is None:
+                        nbrs['1'] = el
                 if nbrs['0'] is not None and nbrs['1'] is not None:
                     break
         return nbrs
@@ -173,22 +178,19 @@ class TransportProblem:
     def getClosedPath(self, s: Shipment):
         path = self.matrixToList()
         path.insert(0, s)
-        removed = list()
+        removed = []
         for el in path:
             nbrs = self.getNeighbors(el, path)
             if nbrs['0'] is None or nbrs['1'] is None:
                 removed.append(el)
                 path.remove(el)
         prev = s
-        stones = list()
+        stones = []
         for i in range(len(path)):
             stones.append(prev)
             tmp = self.getNeighbors(prev, path)
             index = i % 2
-            if index == 1:
-                prev = tmp['1']
-            else:
-                prev = tmp['0']
+            prev = tmp['1'] if index == 1 else tmp['0']
         return stones
 
     def fixDegenerateCase(self):
@@ -216,8 +218,11 @@ class TransportProblem:
         print(f"Итоговые минимальные затраты = {totalCosts}")
 
     def to_canonical(self):
-        matrix = [[0 for col in range(len(self._supply) * len(self._demand))] for row in
-                  range(len(self._supply) + len(self._demand) - 1)]
+        matrix = [
+            [0 for _ in range(len(self._supply) * len(self._demand))]
+            for _ in range(len(self._supply) + len(self._demand) - 1)
+        ]
+
         for row in range(len(self._supply) + len(self._demand) - 1):
             for col in range(len(self._supply) * len(self._demand)):
                 if (row < len(self._demand) - 1 and col in range(row * 5, (row + 1) * 5)) or (

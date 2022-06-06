@@ -14,9 +14,7 @@ def grad_f(x):
                  1 + 4 * c * x[1] / np.sqrt(1 + b * x[0] ** 2 + c * x[1] ** 2)])
 
 def norm(x):
-    if x is None:
-        return float('inf')
-    return np.sqrt(x[0] ** 2 + x[1] ** 2)
+    return float('inf') if x is None else np.sqrt(x[0] ** 2 + x[1] ** 2)
 
 def fib(n):
     numbers = [1, 1]
@@ -49,10 +47,7 @@ def fib_min(nums, x_k, grad_k):
                 break
             f_mu = f_lam
             f_lam = f(x_k - lam * grad_k)
-    if f_lam >= f_mu:
-        return (lam + b) / 2
-    else:
-        return (a + mu) / 2
+    return (lam + b) / 2 if f_lam >= f_mu else (a + mu) / 2
 
 class Solver:
     x: list

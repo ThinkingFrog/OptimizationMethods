@@ -18,7 +18,7 @@ def launch(
     plot_rows: int = 3, 
     plot_cols: int = 4
     ) -> int:
-    
+
     """
     Args:
         method (str): Must be either 'SMO', 'IP' or 'SLSQP'
@@ -85,7 +85,7 @@ def launch(
     if verbose:
         print(f"Confusion matrix:\n{confusion_matrix(y_test, y_pred)}")
         print(f"Accuracy score: {score}")
-    
+
     # Plots
     if graphical:
         prediction_titles = [title(y_pred, y_test, y, idx) for idx in range(y_pred.shape[0])]

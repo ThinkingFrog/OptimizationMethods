@@ -47,7 +47,7 @@ def main():
 
     plot.ylabel("y")
     plot.xlabel("x")
-    plot.title("Линии уровня функции" + my_fun.func_str)
+    plot.title(f"Линии уровня функции{my_fun.func_str}")
     plot.show()
 
 
@@ -69,7 +69,7 @@ def main():
 
     plot.ylabel("y")
     plot.xlabel("x")
-    plot.title("Линии уровня функции" + my_fun.func_str)
+    plot.title(f"Линии уровня функции{my_fun.func_str}")
     plot.show()
 
     return

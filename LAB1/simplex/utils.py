@@ -5,7 +5,7 @@ def minimizing_index(delta: list, B: list):
 
         min = val
         min_idx = idx
-        
+
         if min != "inf":
             break
 
@@ -18,7 +18,7 @@ def minimizing_index(delta: list, B: list):
 
         if val == "inf":
             continue
-        
+
         if val < min:
             min = val
             min_idx = idx

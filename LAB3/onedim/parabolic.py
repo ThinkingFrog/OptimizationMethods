@@ -70,28 +70,18 @@ def payell_method(fun: Function, eps: float):
         x2 = x1 + h
         f1 = PointValue(x1, fun.func(x1))
         f2 = PointValue(x2, fun.func(x2))
-        if f1.y > f2.y:
-            x3 = x1 + 2 * h
-        else:
-            x3 = x1 - h
+        x3 = x1 + 2 * h if f1.y > f2.y else x1 - h
         f3 = PointValue(x3, fun.func(x3))
-        if f1.y < f2.y:
-            if f1.y < f3.y:
-                f_min = f1
-            else:
-                f_min = f3
-        elif f2.y < f3.y:
-            f_min = f2
-        else:
+        if f1.y < f2.y and f1.y < f3.y:
+            f_min = f1
+        elif f1.y < f2.y or f2.y >= f3.y:
             f_min = f3
-
+        else:
+            f_min = f2
         a1 = (f2.y - f1.y) / (f2.x - f1.x)
         a2 = 1 / (f3.x - f2.x) * (((f3.y - f1.y) / (f3.x - f1.x)) - ((f2.y - f1.y) / (f2.x - f1.x)))
         x_res = (f2.x - f1.x) / 2 - a1 / 2 * a2
         if abs(x_res - f_min.x) < eps:
             return x_res, fun.func(x_res), iter_num
         else:
-            if fun.func(x_res) < f_min.y:
-                x1 = x_res
-            else:
-                x1 = f_min.x
+            x1 = x_res if fun.func(x_res) < f_min.y else f_min.x
